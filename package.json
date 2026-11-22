@@ -1,14 +1,25 @@
 {
-  "name": "automation",
+  "name": "playwright-typescript-automation-framework",
   "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {},
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "description": "UI and API test automation framework built with Playwright Test and TypeScript (Page Object Model).",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test tests/ui",
+    "test:api": "playwright test tests/api",
+    "test:headed": "playwright test --headed",
+    "report": "playwright show-report"
+  },
+  "keywords": [
+    "playwright",
+    "typescript",
+    "automation",
+    "ci-cd"
+  ],
+  "author": "Shreehari N",
+  "license": "MIT",
   "devDependencies": {
-    "@playwright/test": "^1.61.1",
-    "@types/node": "^26.1.1"
+    "@playwright/test": "^1.56.0",
+    "@types/node": "^20.17.0"
   }
 }

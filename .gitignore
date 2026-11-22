@@ -1,7 +1,20 @@
-# Playwright
+# Dependencies
 node_modules/
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
-/playwright/.auth/
+
+# Playwright output
+playwright-report/
+test-results/
+blob-report/
+playwright/.cache/
+
+# Local tool / editor folders
+.claude/
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
