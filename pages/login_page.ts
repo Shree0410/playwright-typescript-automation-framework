@@ -1,18 +1,29 @@
-import {Page} from "@playwright/test";
+import { Page, Locator } from '@playwright/test';
+import { BasePage } from './base_page';
 
-export class LoginPage{
-    page:Page;
-    constructor(page: Page){
-        this.page=page;
-    }
+// The SauceDemo login screen (https://www.saucedemo.com/).
+export class LoginPage extends BasePage {
+  readonly usernameInput: Locator;
+  readonly passwordInput: Locator;
+  readonly loginButton: Locator;
+  readonly errorMessage: Locator;
 
-async login(username: string, password: string){
-    await this.page.fill('#user-name', username);
-    await this.page.fill('#password', password);
-    await this.page.click('#login-button');
-}
-async logout(){
-    await this.page.locator('#react-burger-menu-btn').click();
-    await this.page.locator('#logout_sidebar_link').click();
-}
+  constructor(page: Page) {
+    super(page);
+    // SauceDemo adds data-test attributes, which are the most stable locators.
+    this.usernameInput = page.locator('[data-test="username"]');
+    this.passwordInput = page.locator('[data-test="password"]');
+    this.loginButton = page.locator('[data-test="login-button"]');
+    this.errorMessage = page.locator('[data-test="error"]');
+  }
+
+  async open() {
+    await this.goto('/');
+  }
+
+  async login(username: string, password: string) {
+    await this.usernameInput.fill(username);
+    await this.passwordInput.fill(password);
+    await this.loginButton.click();
+  }
 }

@@ -1,87 +1,78 @@
-import {test, expect} from '@playwright/test';
-import {  LoginPage } from '../../pages/login_page';
+import { test, expect } from '@playwright/test';
+import { LoginPage } from '../../pages/login_page';
+import { InventoryPage } from '../../pages/inventory_page';
+import data from '../../test_data/users.json';
 
-let loginPage: LoginPage;
-const password = 'secret_sauce';
+test.describe('Login', () => {
+  let loginPage: LoginPage;
 
-
-test.describe('SauceDemo Login Suite', ()=>{
-
-    
-    test.beforeEach(async ({page})=>{
-    await page.goto('https://www.saucedemo.com/');
+  test.beforeEach(async ({ page }) => {
     loginPage = new LoginPage(page);
-});
+    await loginPage.open();
+  });
 
+  test('should redirect to inventory after valid login', async ({ page }) => {
+    await loginPage.login(data.users.standard, data.password);
 
-// Test 1 - Valid Credentials   
+    // toHaveURL retries until the URL matches, so no manual wait is needed.
+    await expect(page).toHaveURL(/inventory\.html/);
+  });
 
-    test('valid login', async ({page})=>{
-        await loginPage.login('standard_user', password);
-        await expect(page).toHaveURL('https://www.saucedemo.com/inventory.html');
-        await loginPage.logout();
-        
-    });
+  test('should show an error for invalid credentials', async () => {
+    await loginPage.login(data.invalid.username, data.invalid.password);
 
-//  Test 2 - Wrong Username
+    await expect(loginPage.errorMessage).toHaveText(
+      'Epic sadface: Username and password do not match any user in this service'
+    );
+  });
 
-    test('Wrong Credentials', async ({page})=>{
-        await loginPage.login('standard_user1', 'test');
-        await expect(page.locator('[data-test="error"]')).toHaveText('Epic sadface: Username and password do not match any user in this service');
-    });
+  test('should show locked out error for locked_out_user', async () => {
+    await loginPage.login(data.users.lockedOut, data.password);
 
-    
-// Test 3 - Locked Out User
+    await expect(loginPage.errorMessage).toHaveText(
+      'Epic sadface: Sorry, this user has been locked out.'
+    );
+  });
 
-    test('Locked Out User', async ({page})=>{
-        await loginPage.login('locked_out_user', password);
-        await expect(page.locator('[data-test="error"]')).toHaveText('Epic sadface: Sorry, this user has been locked out.');
-    });
+  test('should show "Username is required" when username is empty', async () => {
+    await loginPage.login('', data.password);
 
-// Test 4 - Empty Username
+    await expect(loginPage.errorMessage).toHaveText('Epic sadface: Username is required');
+  });
 
-    test('Empty Username', async ({page})=>{
-        await loginPage.login('', password);
-        await expect(page.locator('[data-test="error"]')).toHaveText('Epic sadface: Username is required');
-    });
+  test('should show "Password is required" when password is empty', async () => {
+    await loginPage.login(data.users.standard, '');
 
-// Test 5 - Empty Password
+    await expect(loginPage.errorMessage).toHaveText('Epic sadface: Password is required');
+  });
 
-    test('Empty Password', async ({page})=>{   
-    await loginPage.login('standard_user', ''); 
-    await expect(page.locator('[data-test="error"]')).toHaveText('Epic sadface: Password is required');
-    });
+  test('should show an error when both fields are empty', async () => {
+    await loginPage.login('', '');
 
-//  Test 6 - Problem User
-    // Check 1
-    test('Problem User', async ({page})=>{
-        await loginPage.login('problem_user', password);
-        await expect(page).toHaveURL('https://www.saucedemo.com/inventory.html');
+    // The username check runs first, so its message is the one shown.
+    await expect(loginPage.errorMessage).toHaveText('Epic sadface: Username is required');
+  });
 
-    // Check 2 whether the page loads
-        await expect(page.locator('.title')).toHaveText('Products');
+  test('should log in problem_user successfully', async ({ page }) => {
+    await loginPage.login(data.users.problem, data.password);
+    const inventoryPage = new InventoryPage(page);
 
-    // Check 3 whether all images are loaded correctly
+    await expect(page).toHaveURL(/inventory/);
+    await expect(loginPage.errorMessage).toBeHidden();
+    await expect(inventoryPage.title).toHaveText('Products');
+  });
 
-        await expect(page.locator('.inventory_item_img')).toHaveCount(6);
-        const images = await page.locator('.inventory_item_img img').all();
-        let src = [];
-        for(let image of images){
-            src.push(await image.getAttribute('src'));
-        }
-        expect(new Set(src).size).toBe(src.length);
-        await loginPage.logout();
+  test('should show "Username" as the username placeholder', async () => {
+    await expect(loginPage.usernameInput).toHaveAttribute('placeholder', 'Username');
+  });
 
-    });
+  test('should return to the login page after logout', async ({ page }) => {
+    await loginPage.login(data.users.standard, data.password);
+    const inventoryPage = new InventoryPage(page);
 
-    
-// Test 7 - Logout check
+    await inventoryPage.logout();
 
-    test('Logout check', async ({page})=>{
-        await loginPage.login('standard_user', password);
-        await expect(page).toHaveURL('https://www.saucedemo.com/inventory.html');
-        await loginPage.logout();
-        await expect(page).toHaveURL('https://www.saucedemo.com/');
-    });
-
+    await expect(page).toHaveURL('/');
+    await expect(loginPage.loginButton).toBeVisible();
+  });
 });

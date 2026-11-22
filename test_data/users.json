@@ -1,0 +1,31 @@
+{
+  "password": "secret_sauce",
+  "users": {
+    "standard": "standard_user",
+    "lockedOut": "locked_out_user",
+    "problem": "problem_user",
+    "performanceGlitch": "performance_glitch_user"
+  },
+  "invalid": {
+    "username": "invalid_user",
+    "password": "wrong_password"
+  },
+  "checkout": {
+    "firstName": "Shree",
+    "lastName": "Tester",
+    "postalCode": "600001"
+  },
+  "api": {
+    "newUser": {
+      "name": "Shree Tester",
+      "username": "shree.tester",
+      "email": "shree.tester@example.com"
+    },
+    "updatedUser": {
+      "id": 1,
+      "name": "Updated Name",
+      "username": "updated.user",
+      "email": "updated.user@example.com"
+    }
+  }
+}
