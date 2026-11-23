@@ -92,7 +92,7 @@ npx playwright test -g "locked out"   # run tests whose title matches
 
 ## CI/CD pipeline
 
-The workflow in `.github/workflows/test_pipeline.yml` runs on every push and pull request to `main`:
+The workflow in `.github/workflows/playwright.yml` runs on every push and pull request to `main`:
 
 1. Checks out the code.
 2. Sets up Node.js 20.
