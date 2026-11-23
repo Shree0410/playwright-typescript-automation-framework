@@ -1,0 +1,13 @@
+{
+  "password": "secret_sauce",
+  "users": {
+    "standard": "standard_user",
+    "lockedOut": "locked_out_user",
+    "problem": "problem_user",
+    "performanceGlitch": "performance_glitch_user"
+  },
+  "invalid": {
+    "username": "invalid_user",
+    "password": "wrong_password"
+  }
+}
