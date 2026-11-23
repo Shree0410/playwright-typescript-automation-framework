@@ -44,8 +44,7 @@ playwright-typescript-automation-framework/
 ├── package.json
 ├── package-lock.json
 ├── playwright.config.ts          # Base URL, parallelism, retries, reporter, browsers
-├── tsconfig.json
-├── CLAUDE.md                     # Project conventions for AI-assisted changes
+├── tsconfig.json           
 └── README.md
 ```
 
