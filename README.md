@@ -24,7 +24,7 @@ every push and pull request through GitHub Actions.
 playwright-typescript-automation-framework/
 ├── .github/
 │   └── workflows/
-│       └── test_pipeline.yml     # CI pipeline: install, run tests, upload report
+│       └── playwright.yml     # CI pipeline: install, run tests, upload report
 ├── pages/                        # Page objects: locators and actions per page
 │   ├── base_page.ts
 │   ├── login_page.ts
